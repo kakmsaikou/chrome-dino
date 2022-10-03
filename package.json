@@ -4,6 +4,7 @@
   "description": "",
   "main": "./src/index.ts",
   "scripts": {
+    "start": "rm -rf dist && parcel src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,5 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "phaser": "^3.55.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
   }
 }

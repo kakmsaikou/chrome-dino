@@ -19,14 +19,16 @@ export class PlayScene extends Phaser.Scene {
     // 加载小恐龙
     this.dino = this.physics.add
       .sprite(0, height as number, 'dino-idle')
+      .setGravityY(5000) // 设置向下重力
+      .setCollideWorldBounds(true) // 允许小恐龙与世界碰撞
       .setOrigin(0, 1);
 
-    this.handleInputs()
+    this.handleInputs();
   }
 
-  handleInputs(){
-    this.input.keyboard.on('keydown-SPACE',()=>{
-      console.log('按下空格')
-    })
+  handleInputs() {
+    this.input.keyboard.on('keydown-SPACE', () => {
+      this.dino.setVelocity(-1600);
+    });
   }
 }

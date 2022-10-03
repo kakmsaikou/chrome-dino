@@ -20,5 +20,13 @@ export class PlayScene extends Phaser.Scene {
     this.dino = this.physics.add
       .sprite(0, height as number, 'dino-idle')
       .setOrigin(0, 1);
+
+    this.handleInputs()
+  }
+
+  handleInputs(){
+    this.input.keyboard.on('keydown-SPACE',()=>{
+      console.log('按下空格')
+    })
   }
 }

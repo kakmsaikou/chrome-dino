@@ -12,13 +12,10 @@
   "author": "",
   "license": "ISC",
   "staticFiles": {
-    "staticFiles": {
-      "staticPath": [
-        "static",
-        "static"
-      ],
-      "watcherGlob": "**"
-    },
+    "staticPath": [
+      "public",
+      "static"
+    ],
     "watcherGlob": "**"
   },
   "dependencies": {

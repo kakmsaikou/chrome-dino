@@ -27,7 +27,11 @@ export class PlayScene extends Phaser.Scene {
   }
 
   handleInputs() {
+    // 每次按空格，给予小恐龙一个 -1600 的向上的速度
     this.input.keyboard.on('keydown-SPACE', () => {
+      if(!this.dino.body.onFloor()){
+        return
+      }
       this.dino.setVelocity(-1600);
     });
   }

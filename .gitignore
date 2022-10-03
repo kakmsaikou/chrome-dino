@@ -2,3 +2,4 @@
 /.idea
 /dist
 /.cache
+yarn-error.log

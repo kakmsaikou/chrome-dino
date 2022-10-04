@@ -4,7 +4,7 @@ export class PlayScene extends Phaser.Scene {
   private ground: Phaser.GameObjects.TileSprite;
   private dino: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private obstacle: Phaser.Physics.Arcade.Group;
+  private obstacles: Phaser.Physics.Arcade.Group;
   private isGameRunning: boolean;
   private respawnTime: number;
 
@@ -37,9 +37,47 @@ export class PlayScene extends Phaser.Scene {
       .setCollideWorldBounds(true) // 允许小恐龙与世界碰撞
       .setOrigin(0, 1);
 
+    this.obstacles = this.physics.add.group();
+
     this.handleInputs();
     this.initAnimate();
     this.initStartTrigger();
+    this.initColliders();
+  }
+
+  initColliders() {
+    this.physics.add.collider(this.dino, this.obstacles, () => {
+      console.log('小恐龙碰到障碍物');
+    });
+  }
+
+  placeObstacle() {
+    const {width, height} = this.game.config;
+    // 决定生成 7 种障碍中的哪一个（6 仙人掌 + 1 翼龙）
+    const obstacleNum = Math.floor(Math.random() * 7) + 1;
+    // 设置障碍物之间的距离
+    const distance = Phaser.Math.Between(600, 900);
+    let obstacle;
+
+    // obstacleNum > 6 生成翼龙
+    if (obstacleNum > 6) {
+      const enemyHeight = [44, 66];
+      obstacle = this.obstacles.create(
+        (width as number) + distance,
+        (height as number) - enemyHeight[Math.floor(Math.random() * 2)],
+        'enemy-bird')
+        .setOrigin(0, 1);
+
+      obstacle.body.height = obstacle.body.height / 1.5;
+      obstacle.play('enemy-bird-anim', true);
+    } else {
+      obstacle = this.obstacles
+        .create(
+          (width as number) + distance,
+          height as number,
+          `obstacle-${obstacleNum}`)
+        .setOrigin(0, 1);
+    }
   }
 
   initStartTrigger() {
@@ -135,8 +173,16 @@ export class PlayScene extends Phaser.Scene {
     if (!this.isGameRunning) return;
 
     this.ground.tilePositionX += this.gameSpeed;
+    Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
 
     this.respawnTime += delta * this.gameSpeed;
+
+    if (this.respawnTime >= 15000) {
+      this.placeObstacle();
+      this.respawnTime = 0;
+    }
+
+    this.obstacles.getChildren()
 
     // 判断身体是否 y 方向偏移，若 true 则为跳起
     if (this.dino.body.deltaAbsY() > 0) {

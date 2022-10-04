@@ -9,6 +9,7 @@ export class PlayScene extends Phaser.Scene {
   private gameOverText: Phaser.GameObjects.Image;
   private restart: Phaser.GameObjects.Image;
   private scoreText: Phaser.GameObjects.Text;
+  private highestScoreText: Phaser.GameObjects.Text;
   private isGameRunning: boolean;
   private respawnTime: number;
 
@@ -60,6 +61,16 @@ export class PlayScene extends Phaser.Scene {
         resolution: 5
       })
       .setOrigin(1, 0);
+
+    this.highestScoreText = this.add
+      .text(0, 0, 'HI 000000', {
+        color: '#535353',
+        fontSize: '900 35px Courier',
+        resolution: 5
+      })
+      .setOrigin(1, 0);
+
+    this.highestScoreText.x = this.scoreText.x - this.scoreText.width - 20;
 
     this.obstacles = this.physics.add.group();
 

@@ -105,6 +105,21 @@ export class PlayScene extends Phaser.Scene {
         }
         this.score++;
         this.gameSpeed += 0.01;
+
+        if (this.score % 100 === 0) {
+          this.reachSound.play();
+
+          this.tweens.add({
+            targets: this.scoreText,
+            duration: 100,
+            repeat: 3,
+            props: {
+              alpha: 0
+            },
+            yoyo: true
+          });
+        }
+
         // @ts-ignore
         const score = Array.from(String(this.score), Number);
         for (let i = 0; i < 6 - String(this.score).length; i++) {

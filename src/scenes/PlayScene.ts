@@ -160,8 +160,17 @@ export class PlayScene extends Phaser.Scene {
   }
 
   handleInputs() {
+    // 点击 restart 按钮后重启游戏
     this.restart.on('pointerdown', () => {
-      console.log('按下');
+      this.dino.setVelocityY(0);
+      // @ts-ignore
+      this.dino.body.height = 92;
+      this.dino.body.offset.y = 0;
+      this.physics.resume();
+      this.obstacles.clear(true, true);
+      this.isGameRunning = true;
+      this.gameOverScreen.setAlpha(0);
+      this.anims.resumeAll();
     });
 
     // 每次按空格，给予小恐龙一个 -1600 的向上的速度

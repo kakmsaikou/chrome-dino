@@ -31,7 +31,7 @@ export class PlayScene extends Phaser.Scene {
 
     this.gameOverText = this.add.image(0, 0, 'game-over');
 
-    this.restart = this.add.image(0, 0, 'restart');
+    this.restart = this.add.image(0, 0, 'restart').setInteractive();
 
     this.gameOverScreen.add([this.gameOverText, this.restart]);
 
@@ -62,8 +62,6 @@ export class PlayScene extends Phaser.Scene {
 
   initColliders() {
     this.physics.add.collider(this.dino, this.obstacles, () => {
-      console.log('小恐龙碰到障碍物');
-
       this.physics.pause();
       this.isGameRunning = false;
       this.anims.pauseAll();
@@ -162,6 +160,10 @@ export class PlayScene extends Phaser.Scene {
   }
 
   handleInputs() {
+    this.restart.on('pointerdown', () => {
+      console.log('按下');
+    });
+
     // 每次按空格，给予小恐龙一个 -1600 的向上的速度
     this.input.keyboard.on('keydown-SPACE', () => {
       if (!this.dino.body.onFloor()) {

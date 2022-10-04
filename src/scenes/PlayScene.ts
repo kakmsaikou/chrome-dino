@@ -107,6 +107,14 @@ export class PlayScene extends Phaser.Scene {
 
   initColliders() {
     this.physics.add.collider(this.dino, this.obstacles, () => {
+      // split() 用于分割 “HI” 和数字
+      const highestScore = this.highestScoreText.text.split(' ')[1];
+      const newScore = Number(this.scoreText.text) > Number(highestScore)
+        ? this.scoreText.text
+        : highestScore;
+
+      this.highestScoreText.setText('HI ' + newScore);
+
       this.physics.pause();
       this.isGameRunning = false;
       this.anims.pauseAll();
@@ -216,6 +224,7 @@ export class PlayScene extends Phaser.Scene {
       this.isGameRunning = true;
       this.gameOverScreen.setAlpha(0);
       this.anims.resumeAll();
+      this.score = 0;
     });
 
     // 每次按空格，给予小恐龙一个 -1600 的向上的速度

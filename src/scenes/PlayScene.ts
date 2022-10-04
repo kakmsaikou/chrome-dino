@@ -48,6 +48,12 @@ export class PlayScene extends Phaser.Scene {
   initColliders() {
     this.physics.add.collider(this.dino, this.obstacles, () => {
       console.log('小恐龙碰到障碍物');
+
+      this.physics.pause();
+      this.isGameRunning = false;
+      this.anims.pauseAll();
+      this.dino.setTexture('dino-hurt');
+      this.respawnTime = 0;
     });
   }
 
@@ -182,7 +188,8 @@ export class PlayScene extends Phaser.Scene {
       this.respawnTime = 0;
     }
 
-    this.obstacles.getChildren()
+    this.obstacles.getChildren();
+    // TODO 释放资源
 
     // 判断身体是否 y 方向偏移，若 true 则为跳起
     if (this.dino.body.deltaAbsY() > 0) {

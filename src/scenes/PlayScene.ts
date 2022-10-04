@@ -27,6 +27,34 @@ export class PlayScene extends Phaser.Scene {
       .setOrigin(0, 1);
 
     this.handleInputs();
+    this.initAnimate();
+  }
+
+  // 设置初始动画
+  initAnimate() {
+    // 小恐龙跑步动画
+    this.anims.create({
+      key: 'dino-run-anim',
+      frames: this.anims.generateFrameNames('dino-run'),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // 小恐龙下蹲动画
+    this.anims.create({
+      key: 'dino-down-anim',
+      frames: this.anims.generateFrameNames('dino-down'),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // 翼龙飞行动画
+    this.anims.create({
+      key: 'enemy-bird-anim',
+      frames: this.anims.generateFrameNames('enemy-bird'),
+      frameRate: 6,
+      repeat: -1,
+    });
   }
 
   handleInputs() {
@@ -61,5 +89,18 @@ export class PlayScene extends Phaser.Scene {
   // 滚动地图
   update(time: number, delta: number) {
     this.ground.tilePositionX += this.gameSpeed;
+
+    // 判断身体是否 y 方向偏移，若 true 则为跳起
+    if (this.dino.body.deltaAbsY() > 0) {
+      // 跳起时停止播放动画，贴图设为跑步动画的第 0 帧
+      this.dino.anims.stop()
+      this.dino.setTexture('dino-run', 0)
+    } else {
+      if (this.dino.body.height <= 58) {
+        this.dino.play('dino-down-anim', true);
+      } else {
+        this.dino.play('dino-run-anim', true);
+      }
+    }
   }
 }

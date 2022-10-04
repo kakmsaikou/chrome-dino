@@ -77,7 +77,7 @@ export class PlayScene extends Phaser.Scene {
     this.obstacles = this.physics.add.group();
 
     this.handleInputs();
-    this.handleScore()
+    this.handleScore();
     this.initAnimate();
     this.initStartTrigger();
     this.initColliders();
@@ -95,9 +95,11 @@ export class PlayScene extends Phaser.Scene {
         }
         this.score++;
         this.gameSpeed += 0.01;
-
         // @ts-ignore
         const score = Array.from(String(this.score), Number);
+        for (let i = 0; i < 6 - String(this.score).length; i++) {
+          score.unshift(0);
+        }
         this.scoreText.setText(score.join(''));
       }
     });

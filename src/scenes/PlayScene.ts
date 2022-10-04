@@ -5,6 +5,9 @@ export class PlayScene extends Phaser.Scene {
   private dino: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private obstacles: Phaser.Physics.Arcade.Group;
+  private gameOverScreen: Phaser.GameObjects.Container;
+  private gameOverText: Phaser.GameObjects.Image;
+  private restart: Phaser.GameObjects.Image;
   private isGameRunning: boolean;
   private respawnTime: number;
 
@@ -19,6 +22,18 @@ export class PlayScene extends Phaser.Scene {
 
   create(): void {
     const {width, height} = this.game.config;
+
+    this.isGameRunning = false;
+
+    this.gameOverScreen = this.add
+      .container((width as number) / 2, (height as number) / 2 - 50)
+      .setAlpha(0); // 默认结束界面透明度为 0
+
+    this.gameOverText = this.add.image(0, 0, 'game-over');
+
+    this.restart = this.add.image(0, 0, 'restart');
+
+    this.gameOverScreen.add([this.gameOverText, this.restart]);
 
     // 在小恐龙正上方添加一个触发器
     this.startTrigger = this.physics.add
@@ -54,6 +69,7 @@ export class PlayScene extends Phaser.Scene {
       this.anims.pauseAll();
       this.dino.setTexture('dino-hurt');
       this.respawnTime = 0;
+      this.gameOverScreen.setAlpha(1);
     });
   }
 
@@ -118,7 +134,7 @@ export class PlayScene extends Phaser.Scene {
     });
   }
 
-  // 设置初始动画
+  // 初始化动画
   initAnimate() {
     // 小恐龙跑步动画
     this.anims.create({

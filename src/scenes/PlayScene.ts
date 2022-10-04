@@ -3,6 +3,8 @@ import * as Phaser from 'phaser';
 export class PlayScene extends Phaser.Scene {
   private ground: Phaser.GameObjects.TileSprite;
   private dino: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+
   private gameSpeed: number;
 
   constructor() {
@@ -13,6 +15,11 @@ export class PlayScene extends Phaser.Scene {
 
   create(): void {
     const {width, height} = this.game.config;
+
+    // 在小恐龙正上方添加一个触发器
+    this.startTrigger = this.physics.add
+      .sprite(0, 10, null)
+      .setOrigin(0, 1);
 
     // 加载地图资源
     this.ground = this.add
@@ -28,6 +35,19 @@ export class PlayScene extends Phaser.Scene {
 
     this.handleInputs();
     this.initAnimate();
+    this.initStartTrigger();
+  }
+
+  initStartTrigger() {
+    const {width, height} = this.game.config;
+    // 小恐龙和触发器接触后触发
+    this.physics.add.overlap(this.startTrigger, this.dino, () => {
+      // 如果触发器存在，则让触发器掉到地图正下方，并且取消激活、隐藏对象
+      if (this.startTrigger.y === 10) {
+        this.startTrigger.body.reset(0, height as number);
+        this.startTrigger.disableBody(true, true);
+      }
+    });
   }
 
   // 设置初始动画
@@ -93,8 +113,8 @@ export class PlayScene extends Phaser.Scene {
     // 判断身体是否 y 方向偏移，若 true 则为跳起
     if (this.dino.body.deltaAbsY() > 0) {
       // 跳起时停止播放动画，贴图设为跑步动画的第 0 帧
-      this.dino.anims.stop()
-      this.dino.setTexture('dino-run', 0)
+      this.dino.anims.stop();
+      this.dino.setTexture('dino-run', 0);
     } else {
       if (this.dino.body.height <= 58) {
         this.dino.play('dino-down-anim', true);

@@ -131,6 +131,8 @@ export class PlayScene extends Phaser.Scene {
       this.dino.setTexture('dino-hurt');
       this.respawnTime = 0;
       this.gameOverScreen.setAlpha(1);
+
+      this.hitSound.play();
     });
   }
 

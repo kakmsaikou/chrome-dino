@@ -5,15 +5,21 @@ export class PlayScene extends Phaser.Scene {
   private dino: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private obstacles: Phaser.Physics.Arcade.Group;
+
   private gameOverScreen: Phaser.GameObjects.Container;
   private gameOverText: Phaser.GameObjects.Image;
   private restart: Phaser.GameObjects.Image;
+
   private scoreText: Phaser.GameObjects.Text;
   private highestScoreText: Phaser.GameObjects.Text;
-  private isGameRunning: boolean;
-  private respawnTime: number;
+
+  private jumpSound: Phaser.Sound.BaseSound;
+  private hitSound: Phaser.Sound.BaseSound;
+  private reachSound: Phaser.Sound.BaseSound;
 
   private gameSpeed: number;
+  private isGameRunning: boolean;
+  private respawnTime: number;
 
   private score = 0;
 
@@ -28,6 +34,10 @@ export class PlayScene extends Phaser.Scene {
     const {width, height} = this.game.config;
 
     this.isGameRunning = false;
+
+    this.jumpSound = this.sound.add('jump', {volume: 0.5});
+    this.hitSound = this.sound.add('hit', {volume: 0.5});
+    this.reachSound = this.sound.add('reach', {volume: 0.5});
 
     this.gameOverScreen = this.add
       .container((width as number) / 2, (height as number) / 2 - 50)
@@ -238,6 +248,7 @@ export class PlayScene extends Phaser.Scene {
       this.dino.body.offset.y = 0;
 
       this.dino.setVelocity(-1600);
+      this.jumpSound.play();
     });
 
     // 按下 ↓ 键，小恐龙身体变矮

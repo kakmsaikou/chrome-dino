@@ -15,6 +15,8 @@ export class PlayScene extends Phaser.Scene {
 
   private gameSpeed: number;
 
+  private score = 0;
+
   constructor() {
     super('PlayScene');
 
@@ -75,9 +77,30 @@ export class PlayScene extends Phaser.Scene {
     this.obstacles = this.physics.add.group();
 
     this.handleInputs();
+    this.handleScore()
     this.initAnimate();
     this.initStartTrigger();
     this.initColliders();
+  }
+
+  handleScore() {
+    // 每一百毫秒 score+1
+    this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callbackScope: this,
+      callback: () => {
+        if (!this.isGameRunning) {
+          return;
+        }
+        this.score++;
+        this.gameSpeed += 0.01;
+
+        // @ts-ignore
+        const score = Array.from(String(this.score), Number);
+        this.scoreText.setText(score.join(''));
+      }
+    });
   }
 
   initColliders() {

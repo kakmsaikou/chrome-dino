@@ -4,6 +4,9 @@ export class PlayScene extends Phaser.Scene {
   private ground: Phaser.GameObjects.TileSprite;
   private dino: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private startTrigger: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private obstacle: Phaser.Physics.Arcade.Group;
+  private isGameRunning: boolean;
+  private respawnTime: number;
 
   private gameSpeed: number;
 
@@ -11,6 +14,7 @@ export class PlayScene extends Phaser.Scene {
     super('PlayScene');
 
     this.gameSpeed = 10;
+    this.respawnTime = 0;
   }
 
   create(): void {
@@ -46,6 +50,26 @@ export class PlayScene extends Phaser.Scene {
       if (this.startTrigger.y === 10) {
         this.startTrigger.body.reset(0, height as number);
         this.startTrigger.disableBody(true, true);
+
+        // 为 time 添加 startEvent() 展开地图
+        const startEvent = this.time.addEvent({
+          delay: 10,
+          loop: true,
+          callbackScope: this,
+          callback: () => {
+            if (this.ground.width < width) {
+              this.ground.width += 20;
+            }
+
+            // 当地图展开到最大时，移除startEvent，并开始游戏
+            if (this.ground.width >= width) {
+              // @ts-ignore
+              this.ground.width = width;
+              this.isGameRunning = true;
+              startEvent.remove();
+            }
+          }
+        });
       }
     });
   }
@@ -108,7 +132,11 @@ export class PlayScene extends Phaser.Scene {
 
   // 滚动地图
   update(time: number, delta: number) {
+    if (!this.isGameRunning) return;
+
     this.ground.tilePositionX += this.gameSpeed;
+
+    this.respawnTime += delta * this.gameSpeed;
 
     // 判断身体是否 y 方向偏移，若 true 则为跳起
     if (this.dino.body.deltaAbsY() > 0) {
